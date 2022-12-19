@@ -9,10 +9,14 @@ import {
     Center,
     Image,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import ImageDelete from "../assets/image-delete.svg";
+import { useAuth } from "../contexts/auth-provider";
 import { DeleteNotes } from "./ApiHandler";
 
 export default function ModalLogout({ isOpen, onClose, payload, reload }) {
+    const { getAccessToken } = useAuth();
+
     return (
         <Modal
             size="sm"
@@ -51,8 +55,8 @@ export default function ModalLogout({ isOpen, onClose, payload, reload }) {
                         borderRadius="lg"
                         colorScheme={"red"}
                         fontWeight={500}
-                        onClick={() => {
-                            DeleteNotes(payload, reload);
+                        onClick={async () => {
+                            DeleteNotes(await getAccessToken(), payload, reload);
                             onClose();
                         }}
                     >

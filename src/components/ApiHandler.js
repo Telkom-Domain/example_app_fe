@@ -2,21 +2,12 @@ import axios from "axios";
 import { LOCAL_STORAGE_TOKEN, BASE_API } from "../utils/constants";
 import { getLocalStorage } from "../utils/helper/localStorage";
 
-const localStorage = getLocalStorage(LOCAL_STORAGE_TOKEN);
-var token;
-// var owner;
-localStorage && localStorage.access_token
-    ? (token = localStorage.access_token)
-    : //   (owner = localStorage.decoded.id_token.sub))
-      null;
-// const token = localStorage.access_token;
-
-export async function GetAllNotes() {
+export async function GetAllNotes(accessToken) {
     const API_URL = `${BASE_API}/notes`;
     try {
         const GET_DATA = await axios.get(API_URL, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const res = GET_DATA.data;
@@ -34,12 +25,12 @@ export async function GetAllNotes() {
     }
 }
 
-export async function GetNotesById(id) {
+export async function GetNotesById(accessToken, id) {
     const API_URL = `${BASE_API}/notes/${id}`;
     try {
         const GET_DATA = await axios.get(API_URL, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const res = GET_DATA.data;
@@ -57,7 +48,7 @@ export async function GetNotesById(id) {
     }
 }
 
-export async function PostNotes(values) {
+export async function PostNotes(accessToken, values) {
     const API_URL = `${BASE_API}/notes`;
     const owner = getLocalStorage(LOCAL_STORAGE_TOKEN).decoded.id_token.sub;
     const data = {
@@ -69,7 +60,7 @@ export async function PostNotes(values) {
     try {
         const POST_NOTES = await axios.post(API_URL, data, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const res = POST_NOTES.data;
@@ -86,12 +77,12 @@ export async function PostNotes(values) {
     }
 }
 
-export async function DeleteNotes(payload, reload) {
+export async function DeleteNotes(accessToken, payload, reload) {
     const API_URL = `${BASE_API}/notes/${payload.id}`;
     try {
         const DELETE_NOTES = await axios.delete(API_URL, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const res = DELETE_NOTES.data;
@@ -108,7 +99,7 @@ export async function DeleteNotes(payload, reload) {
     }
 }
 
-export async function UpdateNotes(value, id, reload) {
+export async function UpdateNotes(accessToken, value, id, reload) {
     const API_URL = `${BASE_API}/notes/${id}`;
     const data = {
         title: value.title,
@@ -118,7 +109,7 @@ export async function UpdateNotes(value, id, reload) {
     try {
         const UPDATE_NOTES = await axios.put(API_URL, data, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const res = UPDATE_NOTES.data;

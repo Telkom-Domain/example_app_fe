@@ -12,8 +12,11 @@ import {
 import { GetAllNotes } from "../components/ApiHandler.js";
 import { Plus } from "react-feather";
 import ModalAddNotes from "../components/ModalAddNotes";
+import { useAuth } from "../contexts/auth-provider";
 
 export default function NoteList() {
+    const { getAccessToken, isAuthenticated } = useAuth();
+
     const [notes, setNotes] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const onClose = () => setIsOpen(false);
@@ -23,14 +26,16 @@ export default function NoteList() {
     const colorHover = useColorModeValue("blackAlpha.700 ", "whiteAlpha.900");
 
     const FetchAllNotes = async () => {
-        GetAllNotes().then((res) => {
+        const accessToken = await getAccessToken();
+
+        GetAllNotes(accessToken).then((res) => {
             setNotes(res.data);
         });
     };
 
     useEffect(() => {
-        FetchAllNotes();
-    }, []);
+      if (isAuthenticated) FetchAllNotes();
+    }, [isAuthenticated]);
 
     return (
         <Box w={"full"} minH={"100vh"}>

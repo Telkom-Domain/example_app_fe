@@ -17,8 +17,10 @@ import {
 import { useForm } from "react-hook-form";
 import AlertNotification from "./Alert";
 import { UpdateNotes } from "./ApiHandler";
+import { useAuth } from "../contexts/auth-provider";
 
 export default function ModalDetailNotes({ isOpen, onClose, payload, reload }) {
+    const { getAccessToken } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState("");
@@ -36,7 +38,8 @@ export default function ModalDetailNotes({ isOpen, onClose, payload, reload }) {
 
     const submitHandler = async (values) => {
         setIsLoading(true);
-        const res = await UpdateNotes(values, payload.id, reload);
+        const accessToken = await getAccessToken()
+        const res = await UpdateNotes(accessToken, values, payload.id, reload);
         setMessage(res.message);
         setStatus(res.status);
         if (res.status === "success") {
