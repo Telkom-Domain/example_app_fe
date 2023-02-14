@@ -12,12 +12,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
       <AuthProvider
-        domain="http://localhost:8000"
-        tenant="alpinemd"
-        clientId="6344f502f139bd25aebf1c10"
-        clientSecret="$2b$04$YzZ43eIxfjA1nlnjsszYXu7GLHxwk7hBtfreqBOU9m3eCSqZWDjmC"
+        domain="http://localhost:1000"
+        tenant="server-local"
+        clientId="63e4c142d7790d18a0942dc4"
+        clientSecret="$2b$04$wsIQODcadMaOtMHYXdFODuk6khAfGHVtzB6Te1CEojS7cNlx6BJHm"
         redirectUri={window.location.origin + "/notes"}
-        audience="https://alpinemd.com/"
+        audience="http://localhost:1337"
         scope="read:notes write:notes update:notes delete:notes"
       >
         <App />

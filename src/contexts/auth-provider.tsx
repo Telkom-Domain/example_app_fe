@@ -38,7 +38,7 @@ export default function AuthProvider(options: AuthProviderOptions) {
   const [state, dispatch] = useReducer(reducer, initialAuthState);
 
   const buildAuthorizeUrl = useCallback(async () => {
-    return `${options.domain}/${options.tenant}/authorize`
+    return `${options.domain}/authorize`
     + `?client_id=${encodeURIComponent(options.clientId)}`
     + `&redirect_uri=${encodeURIComponent(options.redirectUri)}`
     + `&audience=${encodeURIComponent(options.audience)}`
@@ -52,7 +52,7 @@ export default function AuthProvider(options: AuthProviderOptions) {
   const _requestToken = useCallback(
     async (code: string) => {
       const authResult = await fetch(
-        `${options.domain}/${options.tenant}/oauth/token`,
+        `${options.domain}/oauth/token`,
         {
           method: "POST",
           headers: {
