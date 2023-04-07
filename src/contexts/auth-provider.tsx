@@ -163,13 +163,19 @@ export default function AuthProvider(options: AuthProviderOptions) {
   }, [options]);
 
   const logout = useCallback((): Promise<void> => {
+    return fetch(`${options.domain}/signout`
+      + `?client_id=${encodeURIComponent(options.clientId)}`
+    ).then((response) => {
+      if (response.status === 200) {
     localStorage.removeItem("domain");
 
     dispatch({
       type: 'LOGOUT'
     });
-
-    return Promise.resolve();
+      } else  {
+        throw new Error("Logout failed");
+      }
+    });
   }, [options]);
 
   useEffect(() => {
