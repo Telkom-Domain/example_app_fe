@@ -12,7 +12,13 @@ import jwt_decode from "jwt-decode";
 
 import { AuthContextInterface, initialContext } from "./auth-context";
 import { initialAuthState } from "./auth-state";
-import { formEncode, hasAuthParams, loginError, parseQueryResult, tokenError } from "./utils";
+import {
+  formEncode,
+  hasAuthParams,
+  loginError,
+  parseQueryResult,
+  tokenError,
+} from "./utils";
 import { RedirectLoginResult, User } from "./globals";
 import { reducer } from "./reducer";
 
@@ -38,11 +44,13 @@ export default function AuthProvider(options: AuthProviderOptions) {
   const [state, dispatch] = useReducer(reducer, initialAuthState);
 
   const buildAuthorizeUrl = useCallback(async () => {
-    return `${options.domain}/authorize`
-    + `?client_id=${encodeURIComponent(options.clientId)}`
-    + `&redirect_uri=${encodeURIComponent(options.redirectUri)}`
-    + `&audience=${encodeURIComponent(options.audience)}`
-    + `&scope=${encodeURIComponent(options.scope)}`;
+    return (
+      `${options.domain}/authorize` +
+      `?client_id=${encodeURIComponent(options.clientId)}` +
+      `&redirect_uri=${encodeURIComponent(options.redirectUri)}` +
+      `&audience=${encodeURIComponent(options.audience)}` +
+      `&scope=${encodeURIComponent(options.scope)}`
+    );
   }, [options]);
 
   const login = useCallback(async () => {
@@ -51,22 +59,19 @@ export default function AuthProvider(options: AuthProviderOptions) {
 
   const _requestToken = useCallback(
     async (code: string) => {
-      const authResult = await fetch(
-        `${options.domain}/oauth/token`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: formEncode({
-            code: code,
-            grant_type: "authorization_code",
-            client_id: options.clientId,
-            client_secret: options.clientSecret,
-            redirect_uri: options.redirectUri,
-          }),
-        }
-      ).then((response) => response.json());
+      const authResult = await fetch(`${options.domain}/oauth/token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formEncode({
+          code: code,
+          grant_type: "authorization_code",
+          client_id: options.clientId,
+          client_secret: options.clientSecret,
+          redirect_uri: options.redirectUri,
+        }),
+      }).then((response) => response.json());
 
       if (!authResult) {
         throw new Error("Failed requesting token: unexpected response");
@@ -121,9 +126,9 @@ export default function AuthProvider(options: AuthProviderOptions) {
         throw tokenError(error);
       } finally {
         dispatch({
-          type: 'HANDLE_REDIRECT_COMPLETE',
-          user: await getUser()
-        })
+          type: "HANDLE_REDIRECT_COMPLETE",
+          user: await getUser(),
+        });
       }
     },
     [options]
@@ -138,12 +143,12 @@ export default function AuthProvider(options: AuthProviderOptions) {
       }
 
       return Promise.resolve(undefined);
-    } catch (error) { 
+    } catch (error) {
       throw tokenError(error);
     } finally {
       dispatch({
-        type: 'GET_ACCESS_TOKEN_COMPLETE',
-        user: await getUser()
+        type: "GET_ACCESS_TOKEN_COMPLETE",
+        user: await getUser(),
       });
     }
   }, [options]);
@@ -162,20 +167,15 @@ export default function AuthProvider(options: AuthProviderOptions) {
     return Promise.reject("Not Implemented");
   }, [options]);
 
-  const logout = useCallback((): Promise<void> => {
-    return fetch(`${options.domain}/signout`
-      + `?client_id=${encodeURIComponent(options.clientId)}`
-    ).then((response) => {
-      if (response.status === 200) {
+  const logout = useCallback(() => {
     localStorage.removeItem("domain");
 
     dispatch({
-      type: 'LOGOUT'
+      type: "LOGOUT",
     });
-      } else  {
-        throw new Error("Logout failed");
-      }
-    });
+
+    window.location.assign(`${options.domain}/signout` +
+      `?client_id=${encodeURIComponent(options.clientId)}`);
   }, [options]);
 
   useEffect(() => {
@@ -194,9 +194,9 @@ export default function AuthProvider(options: AuthProviderOptions) {
 
         user = await getUser();
 
-        dispatch({ type: 'INITIALIZED', user });
+        dispatch({ type: "INITIALIZED", user });
       } catch (error) {
-        dispatch({ type: 'ERROR', error: loginError(error) });
+        dispatch({ type: "ERROR", error: loginError(error) });
       }
     })();
   }, [options]);
