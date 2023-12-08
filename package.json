@@ -22,7 +22,8 @@
     "react-hook-form": "^7.40.0",
     "react-router-dom": "^6.4.0",
     "remixicon": "^2.5.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "telkom-domain-sdk": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

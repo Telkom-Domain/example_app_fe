@@ -18,6 +18,7 @@ import { getLocalStorage } from "../utils/helper/localStorage";
 import { checkLogged } from "../utils/constants";
 import Logo from "../assets/alpinemd.svg";
 import { useAuth } from "../contexts/auth-provider";
+import { iam } from "telkom-domain-sdk"
 
 export default function Navbar() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -108,7 +109,8 @@ export default function Navbar() {
                                               color: "black",
                                           }
                                 }
-                                onClick={() => handleLogout()}
+                                onClick={ () => iam.logout() }
+                                // onClick={() => handleLogout()}
                             >
                                 <Text
                                     fontSize={{
@@ -141,7 +143,8 @@ export default function Navbar() {
                                           color: "black",
                                       }
                             }
-                            onClick={() => login()}
+                            // onClick={() => login()}
+                            onClick={() => iam.loginRedirect()}
                         >
                             <Text
                                 fontSize={{

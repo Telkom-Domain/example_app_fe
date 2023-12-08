@@ -13,6 +13,8 @@ import { GetAllNotes } from "../components/ApiHandler.js";
 import { Plus } from "react-feather";
 import ModalAddNotes from "../components/ModalAddNotes";
 import { useAuth } from "../contexts/auth-provider";
+import { iam } from "telkom-domain-sdk";
+import { LOCAL_STORAGE_TOKEN } from "../utils/constants";
 
 export default function NoteList() {
     const { getAccessToken, isAuthenticated } = useAuth();
@@ -25,6 +27,27 @@ export default function NoteList() {
     const color = useColorModeValue("white", "blackAlpha.800");
     const colorHover = useColorModeValue("blackAlpha.700 ", "whiteAlpha.900");
 
+
+    const loginSuccess = async () => {
+        const router = useRouter()
+        const code = router.query.code
+
+        iam.getAccessToken(code)
+        .then( res => {
+            console.log("result: ", result);
+            window.localStorage.setItem(LOCAL_STORAGE_TOKEN, res);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        // const res = await iam.getAccessToken(code);
+
+        // if ('access_token' in res) {
+        //     window.localStorage.setItem(LOCAL_STORAGE_TOKEN, res)
+        // }
+    };
+
     const FetchAllNotes = async () => {
         const accessToken = await getAccessToken();
 
@@ -34,8 +57,12 @@ export default function NoteList() {
     };
 
     useEffect(() => {
-      if (isAuthenticated) FetchAllNotes();
-    }, [isAuthenticated]);
+        loginSuccess();
+    }, [])
+
+    // useEffect(() => {
+    //   if (isAuthenticated) FetchAllNotes();
+    // }, [isAuthenticated]);
 
     return (
         <Box w={"full"} minH={"100vh"}>
